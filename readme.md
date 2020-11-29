@@ -26,4 +26,4 @@ $ pip install -r requirement.txt
 
 ## Usage
 
-Enter ```python backupextractor.py --help``` to get usage.
+Enter ```python extractor.py --help``` to get usage.
