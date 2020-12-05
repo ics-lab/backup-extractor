@@ -10,9 +10,9 @@ BACKUP_LOCATION = ''
 
 
 class File(object):
-    def __init__(self, name, fhash=None):
+    def __init__(self, name, loc=None):
         self.name = name
-        self.hash = fhash
+        self.location = loc
 
 
 class Directory(File):
@@ -41,14 +41,14 @@ def traverse_callback(path_conv, path, children, is_file=None):
     return Directory(path[-1] if path else '', children)
 
 
-def get_loc_actual_blob(fhash):
+def get_loc_actual_blob(file_hash):
     global BACKUP_LOCATION
 
     dirs = os.listdir(BACKUP_LOCATION)
-    dirs.append(fhash)
+    dirs.append(file_hash)
     dirs = sorted(dirs)
 
-    f = os.path.join(os.path.join(BACKUP_LOCATION, dirs[dirs.index(fhash) - 1]), fhash)
+    f = os.path.join(os.path.join(BACKUP_LOCATION, dirs[dirs.index(file_hash) - 1]), file_hash)
 
     if not os.path.isfile(f):
         return None
@@ -73,10 +73,7 @@ def extract(root, dest):
 
 def main(src, dest):
     global BACKUP_LOCATION
-
     BACKUP_LOCATION = src
-        #'/Users/sokdak/Desktop/36d85d8d2fc0f05b527678702b7f7f1a3ee1a614'
-    # dest = '/Users/sokdak/Desktop/tmp'
 
     c = open_db(os.path.join(BACKUP_LOCATION, 'Manifest.db'))
     t = trie.StringTrie(separator=os.sep)
