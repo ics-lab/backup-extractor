@@ -30,8 +30,12 @@ def open_db(sqlite_db):
 
 
 def traverse_callback(path_conv, path, children, is_file=None):
-    if is_file is not None and get_loc_actual_blob(is_file) is not None:
-        return File(path[-1], is_file)
+    if is_file is not None:
+        actual_file_loc = get_loc_actual_blob(is_file)
+        if actual_file_loc is not None:
+            return File(path[-1], actual_file_loc)
+        else:
+            print('[i] skipping file "{0}" that does not have actual file.'.format(is_file))
 
     children = filter(None, children)
     return Directory(path[-1] if path else '', children)
@@ -63,13 +67,8 @@ def extract(root, dest):
 
             extract(child, name)
         else:
-            loc = get_loc_actual_blob(child.hash)
-
-            if loc is not None:
-                print('[i] found "{0}" at {1}'.format(name, loc))
-                shutil.copyfile(loc, name)
-            else:
-                print('[!] not found: {0}, skipping domain metadata'.format(child.hash))
+            print('[i] found "{0}" at {1}'.format(name, child.hash))
+            shutil.copyfile(child.hash, name)
 
 
 def main(src, dest):
